@@ -1,19 +1,15 @@
 package main
 
 import (
-	"context"
-	"log"
 	"net/http"
-
-	"github.com/golangast/collab/go/Contextor"
-	Handler "github.com/golangast/collab/go/Handlers/Home"
-	"github.com/rs/cors"
+	
+	"github.com/labstack/echo"
 )
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/home", Handler.Home)
-	handler := cors.Default().Handler(mux)
-	c := context.Background()
-	log.Fatal(http.ListenAndServe(":8081", Contextor.AddContext(c, handler)))
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "The beggining...")
+	})
+	e.Logger.Fatal(e.Start(":1323"))
 }
