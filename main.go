@@ -1,7 +1,7 @@
 package main
 
 import (
-	g "collab/db/getallusers"
+	u "collab/pkg/user"
 	"fmt"
 	"net/http"
 
@@ -9,9 +9,12 @@ import (
 )
 
 func main() {
+	//checking the CreateUser works
+	user := u.User{Email: "zach@yahoo.com", Password: "qw"}
+	check := u.User.CreateUser(user, user.Email, user.Password)
+	fmt.Println(check)
+
 	e := echo.New()
-	u := g.GetAllUsers()
-	fmt.Println(u)
 	e.GET("/", func(c echo.Context) error {
 
 		return c.String(http.StatusOK, "The beggining...")
