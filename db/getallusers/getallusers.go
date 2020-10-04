@@ -33,11 +33,11 @@ func GetAllUsers() []u.User {
 			fmt.Println("scan ", i)
 		}
 
-		user = append(user, u.User{Email: email, Password: pass})
+		user = append(user, u.User{ID: id, Email: email, Password: pass})
 
 	}
 	defer rows.Close()
 	defer data.Close()
-	fmt.Println(user)
+	//fmt.Println(user)
 	return user
 }

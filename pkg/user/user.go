@@ -5,11 +5,10 @@ import (
 	"log"
 )
 
-//User for database
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	ID       int    `json:"id" form:"id" query:"id"`
+	Email    string `json:"email" form:"email" query:"email"`
+	Password string `json:"password" form:"password" query:"password"`
 }
 
 //CreateUser creates a user
