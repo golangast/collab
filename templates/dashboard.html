@@ -6,9 +6,44 @@
     <title>Dashboard</title>
 </head>
 <body>
-    this is the dashboards
+  <style>
+      .header{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-end;
+      }
+      .header-con{
+        flex-direction: column;
+        width: 100%;
+      }
+      .header-item{
+        justify-content: space-around;
+        float: left;
+        margin: 2%;
+        border: black;
+        background: #66339926;
+        padding: 1%;
+        border-radius: 3px;
+      }
+  </style>
+<div class="header">
+    <div class="header-con">
+        <div class="header-item">
+            <a href="/dashboard">Home</a>
+        </div>
+        <div class="header-item">
+            <a href="/pagecreator">Page Creator</a>
+        </div>
+ 
+    </div>
+</div>
+   <p>Hi {{.User.Email}}</p> {{.User.ID}} <br>
+   
 
-    {{.User.ID}}<br>
+
+
+
+
    
 </body>
 </html>

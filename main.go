@@ -16,11 +16,11 @@ import (
 
 /*database layout
 database name is db
-   user     | post | dashboard
+   user     | post | page
   -id       -id       -id
-  -email    -email    -userid
-  -password -content  -postid
-			-date
+  -email    -email    -url
+  -password -content  -title
+			-date     -content
 */
 func main() {
 	// Server header
@@ -28,15 +28,16 @@ func main() {
 		templates: template.Must(template.ParseGlob("templates/*.html")),
 	}
 	e := echo.New()
-	// Debug/middleware/templates
-	e.Debug = true
-	s := NewStats()
-	e.Use(s.Process)
+
 	e.Renderer = renderer
 	//actual handlers
 	//e.GET("/users/:id", GetPages)
 	e.GET("/form", f.Form)
-	e.POST("/save", p.Processingform)
+	e.POST("/dashboard", p.Processingform)
+	// Debug/middleware/templates
+	e.Debug = true
+	s := NewStats()
+	e.Use(s.Process)
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "The beggining...")
 	})

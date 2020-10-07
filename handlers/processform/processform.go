@@ -16,8 +16,8 @@ import (
 The point of the method is so that you can
 process the request from the form and then
 get the context of that user in the datbase
-tables.  This way we can create the URI/URL
-so that the dashboard can show that user's
+tables.  This way we can create the dashboard
+so that can show that user's
 pages and keep the ID as a reference to
 update the page table in that view
 */
@@ -26,32 +26,46 @@ func Processingform(c echo.Context) error {
 	//get form data
 	email := c.FormValue("email")
 	pass := c.FormValue("password")
-	//populate that data in User strcut
+	var err error
+
+	//populate that data in User struct
 	user := users.User{Email: email, Password: pass}
-	//add data to database
-	check := users.User.CreateUser(user, user.Email, user.Password)
-	if check != true {
-		fmt.Println("user not created")
-	}
+
 	//regrab all users
-	ausers := allusers.GetAllUsers()
-	//compare them to get the email
-	for _, value := range ausers {
+	DBallusers := allusers.GetAllUsers()
+
+	/*the for loop takes all users and looks for the
+	email and compares it so that we can have a unique
+	identifier on that user row and use it to send to the
+	dashboard.  This way that user opens "their" dashboard.
+	if the user is not found then it creates the user.*/
+	for _, thisuser := range DBallusers {
+
 		//check if emails match
-		if value.Email == email {
-			fmt.Println("email match!")
-			spew.Dump(value.ID)
+		if thisuser.Email == email {
+			//print stuff
+			fmt.Println("email match for user ", thisuser)
+			spew.Dump(thisuser.ID)
+
 			//send that user to the template to get context
 			return c.Render(http.StatusOK, "dashboard.html", map[string]interface{}{
-				"User": value,
+				"User": thisuser,
 			}) //Render
+
 		} else {
-			fmt.Println("email didnt match")
+			fmt.Println("email didnt match, so creating user")
+			//add data to database
+			check := users.User.CreateUser(user, user.Email, user.Password)
+			if check != true {
+				fmt.Println("user not created")
+			}
+			return c.Render(http.StatusOK, "dashboard.html", map[string]interface{}{
+				"User": user,
+			}) //Render
 		} //if
 	} //for
-	return c.Render(http.StatusOK, "dashboard.html", map[string]interface{}{
-		"User": user,
-	}) //Render
+
+	return err
 } //Processingform
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
