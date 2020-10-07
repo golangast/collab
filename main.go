@@ -3,6 +3,7 @@ package main
 import (
 	//u "collab/pkg/user"
 	f "collab/handlers/form"
+	pe "collab/handlers/pageedit"
 	p "collab/handlers/processform"
 	"io"
 	"net/http"
@@ -34,6 +35,8 @@ func main() {
 	//e.GET("/users/:id", GetPages)
 	e.GET("/form", f.Form)
 	e.POST("/dashboard", p.Processingform)
+	e.GET("/page-edit/:id", pe.Pageedit)
+
 	// Debug/middleware/templates
 	e.Debug = true
 	s := NewStats()
