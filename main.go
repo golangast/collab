@@ -9,11 +9,13 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"sync"
 	"text/template"
 	"time"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 /*database layout
@@ -27,23 +29,39 @@ database name is db
 func main() {
 	// Server header
 	renderer := &TemplateRenderer{
-		templates: template.Must(template.ParseGlob("templates/*.html")),
+		templates: template.Must(template.ParseGlob("public/templates/*.html")),
 	}
 	e := echo.New()
-
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Skipper: func(c echo.Context) bool {
+			if strings.HasPrefix(c.Request().Host, "localhost") {
+				return true
+			}
+			return false
+		},
+	}))
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://2625ab64cc70.ngrok.io/", "http://2625ab64cc70.ngrok.io/contentedit"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 	e.Renderer = renderer
-
+	e.Static("/", "/static")
 	e.GET("/form", f.Form)
 	e.POST("/dashboard", p.Processingform)
 	e.GET("/page-create/:userid", pc.Pagecreate)
 	e.GET("/contentedit", c.Contentedit)
-	e.Static("/static", "assets")
-	e.Static("/", "assets")
+	e.Use(middleware.CORS())
+	e.Use(middleware.Static("/public"))
+	e.Static("/", "public")
 	// Debug/middleware/templates
 	e.Debug = true
 	s := NewStats()
 	e.Use(s.Process)
-
+	e.GET("/ping", func(c echo.Context) error {
+		return c.String(200, "test")
+	})
 	e.Logger.Fatal(e.Start(":1323"))
 
 }
