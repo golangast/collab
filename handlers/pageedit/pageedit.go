@@ -1,22 +1,22 @@
 package pageedit
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo"
 )
 
 func Pageedit(c echo.Context) error {
-	id := c.Param("id")
-	pageid := c.Param("pageid")
+	userId := c.Param("userid")
 
 	type URL struct {
-		Id     string
-		Pageid string
+		UserId string
 	}
 
-	u := URL{Id: id, Pageid: pageid}
-	fmt.Println(u.Id)
-	return c.String(http.StatusOK, u.Id)
+	u := URL{UserId: userId}
+
+	return c.Render(http.StatusOK, "pageedit.html", map[string]interface{}{
+		"User": u,
+	}) //Render
+
 }

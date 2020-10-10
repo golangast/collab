@@ -2,8 +2,9 @@ package main
 
 import (
 	//u "collab/pkg/user"
+	c "collab/handlers/contentedit"
 	f "collab/handlers/form"
-	pe "collab/handlers/pageedit"
+	pc "collab/handlers/pagecreate"
 	p "collab/handlers/processform"
 	"io"
 	"net/http"
@@ -19,7 +20,7 @@ import (
 database name is db
    user     | post | page
   -id       -id       -id
-  -email    -email    -url
+  -email              -url
   -password -content  -title
 			-date     -content
 */
@@ -31,19 +32,18 @@ func main() {
 	e := echo.New()
 
 	e.Renderer = renderer
-	//actual handlers
-	//e.GET("/users/:id", GetPages)
+
 	e.GET("/form", f.Form)
 	e.POST("/dashboard", p.Processingform)
-	e.GET("/page-edit/:id", pe.Pageedit)
-
+	e.GET("/page-create/:userid", pc.Pagecreate)
+	e.GET("/contentedit", c.Contentedit)
+	e.Static("/static", "assets")
+	e.Static("/", "assets")
 	// Debug/middleware/templates
 	e.Debug = true
 	s := NewStats()
 	e.Use(s.Process)
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "The beggining...")
-	})
+
 	e.Logger.Fatal(e.Start(":1323"))
 
 }
