@@ -3,6 +3,7 @@ package main
 import (
 	//u "collab/pkg/user"
 	c "collab/handlers/contentedit"
+	ed "collab/handlers/editor"
 	f "collab/handlers/form"
 	pc "collab/handlers/pagecreate"
 	p "collab/handlers/processform"
@@ -52,6 +53,7 @@ func main() {
 	e.POST("/dashboard", p.Processingform)
 	e.GET("/page-create/:userid", pc.Pagecreate)
 	e.GET("/contentedit", c.Contentedit)
+	e.POST("/editor", ed.Editor)
 	e.Use(middleware.CORS())
 	e.Use(middleware.Static("/public"))
 	e.Static("/", "public")

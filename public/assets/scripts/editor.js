@@ -13,6 +13,7 @@ function loadJS() {
     var preview2 =  previewFrame2.contentDocument ||  previewFrame2.contentWindow.document;
     preview2.open();
     preview2.write(editor.getValue()+scriptTag);
+    console.log(editor.getValue()+scriptTag);
     preview2.close();
     
     loadCSS();
@@ -90,14 +91,22 @@ var editorJS = CodeMirror.fromTextArea(document.getElementById('code-js'), {
 
 editorJS.on("change", function() {
     clearTimeout(delayJS);
+   
     
     delayJS = setTimeout(updatePreviewJS, 300);
 });
 
 function updatePreviewJS() {
     loadJS();
+    //console.log(js);
 }
 setTimeout(updatePreviewJS, 300);
 
-
-//alert(editorJS.getValue());
+// var js = editor.getValue();//http://codemirror.net/doc/manual.html#getValue
+// var s = document.createElement('script');
+// s.textContent = js;//inne
+// document.body.appendChild("#preview");
+// console.log(js);
+function Save(js){
+  
+}
