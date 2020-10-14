@@ -6,29 +6,28 @@ import (
 	"log"
 )
 
-//User for database
 type Post struct {
-	ID      int
-	Email   string
-	Content string
-	Date    string
+	Pageid string
+	HTML   string `json:"html" form:"html" query:"html"`
+	CSS    string `json:"css" form:"css" query:"css"`
+	JS     string `json:"js" form:"js" query:"js"`
 }
 
 //CreateUser creates a user
-func (p Post) CreatePost(e string, c string, d string) bool {
+func (p Post) CreatePost(pi string, h string, c string, j string) bool {
 	//opening database
 	data := dbconn.Conn()
 	// query
-	stmt, err := data.Prepare("INSERT INTO post(email, content, date) VALUES(?,?,?)")
+	stmt, err := data.Prepare("INSERT INTO post(pageid, html, css, js) VALUES(?,?,?,?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	//initializing User
-	userstemp := Post{Email: e, Content: c, Date: d}
+	//initializing Post
+	posttemp := Post{Pageid: pi, HTML: h, CSS: c, JS: j}
 	//checking whats going into database because res below prints way too much info
-	fmt.Println(userstemp, "- added to database")
+	fmt.Println(posttemp, "- added to database")
 	//add to the database
-	res, err := stmt.Exec(userstemp.Email, userstemp.Content, userstemp.Date)
+	res, err := stmt.Exec(posttemp.Pageid, posttemp.HTML, posttemp.CSS, posttemp.JS)
 	if err != nil {
 		log.Fatal(err)
 	}

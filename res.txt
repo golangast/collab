@@ -1,0 +1,74 @@
+api in echo example
+
+
+restful example
+package editor
+
+import (
+	"bytes"
+	posts "collab/pkg/post"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/labstack/echo"
+)
+
+/*
+you can test the curl
+curl http://localhost:1323/editor -H "Content-Type: application/json" -d '{ "html": "Kit", "css": "Yuen", "js":"dfd"  }'
+
+*/
+
+type Post struct {
+	HTML string `json:"html" form:"html" query:"html"`
+	CSS  string `json:"css" form:"css" query:"css"`
+	JS   string `json:"js" form:"js" query:"js"`
+}
+
+func Editor(c echo.Context) error {
+	// Bind the input data to post
+	post := new(Post)
+
+	if err := c.Bind(post); err != nil {
+		return err
+	}
+
+	//populate that data in User struct
+	postss := posts.Post{HTML: post.HTML, CSS: post.CSS, JS: post.JS}
+	// Manipulate the input data
+	greeting := post.HTML + " " + post.CSS
+	//Insert
+	check := posts.Post.CreatePost(postss, postss.HTML, postss.CSS, postss.JS)
+	if check != true {
+		fmt.Println("posts not created")
+	}
+
+	fmt.Println(check)
+
+	// Pretty print the json []byte
+	var resp bytes.Buffer
+	var b = []byte(
+		fmt.Sprintf(`{
+		 "html": %q,
+		 "css": %q,
+		 "js": "Hello %s"
+	   }`, post.HTML, post.CSS, greeting),
+	)
+	err := json.Indent(&resp, b, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	// Return the json to the client
+	return c.JSONBlob(
+		http.StatusOK,
+		[]byte(
+			fmt.Sprintf("%s", resp.Bytes()),
+		),
+	)
+
+}
+
+
+https://dev.to/ykyuen/handling-http-request-in-go-echo-framework-2-29ii

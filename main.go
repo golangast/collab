@@ -3,9 +3,9 @@ package main
 import (
 	//u "collab/pkg/user"
 	c "collab/handlers/contentedit"
-	ed "collab/handlers/editor"
 	f "collab/handlers/form"
 	pc "collab/handlers/pagecreate"
+	ed "collab/handlers/postapi/editor"
 	p "collab/handlers/processform"
 	"io"
 	"net/http"
@@ -23,9 +23,9 @@ import (
 database name is db
    user     | post | page
   -id       -id       -id
-  -email              -url
-  -password -content  -title
-			-date     -content
+  -email    -html     -url
+  -password -css      -title
+		    -js        -content
 */
 func main() {
 	// Server header
@@ -44,7 +44,7 @@ func main() {
 		},
 	}))
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"http://2625ab64cc70.ngrok.io/", "http://2625ab64cc70.ngrok.io/contentedit"},
+		AllowOrigins: []string{"http://localhost:1323", "http://874ce7e378c5.ngrok.io", "http://874ce7e378c5.ngrok.io/dashboard"},
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 	e.Renderer = renderer
@@ -62,6 +62,9 @@ func main() {
 	s := NewStats()
 	e.Use(s.Process)
 	e.GET("/ping", func(c echo.Context) error {
+		c.Render(http.StatusOK, "contentedit.html", map[string]interface{}{
+			"User": "user",
+		}) //Render
 		return c.String(200, "test")
 	})
 	e.Logger.Fatal(e.Start(":1323"))
